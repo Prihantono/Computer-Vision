@@ -1,0 +1,39 @@
+//METODE OHLANDER
+
+#include <opencv2/opencv.hpp>
+#include <iostream>
+
+using namespace cv;
+using namespace std;
+
+// Fungsi untuk mengaplikasikan metode Ohlander pada citra
+void applyOhlanderMethod(Mat& image) {
+    // Konversi citra ke dalam skala keabuan
+    cvtColor(image, image, COLOR_BGR2GRAY);
+
+    // Lakukan operasi smoothing untuk mengurangi noise
+    GaussianBlur(image, image, Size(5, 5), 0);
+
+    // Lakukan operasi deteksi tepi dengan metode Canny
+    Canny(image, image, 50, 150);
+
+    // Tampilkan hasil
+    imshow("Ohlander Method Result", image);
+    waitKey(0);
+}
+
+int main() {
+    // Baca citra
+    Mat image = imread("image.jpg");
+
+    // Periksa apakah citra berhasil dibaca
+    if (image.empty()) {
+        cerr << "Error: Unable to read the image." << endl;
+        return -1;
+    }
+
+    // Panggil fungsi applyOhlanderMethod
+    applyOhlanderMethod(image);
+
+    return 0;
+}

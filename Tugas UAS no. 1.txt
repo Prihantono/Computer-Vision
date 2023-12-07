@@ -1,0 +1,94 @@
+//Template Matching menggunakan SAD
+
+#include <opencv2/opencv.hpp>
+#include <iostream>
+
+using namespace cv;
+using namespace std;
+
+void templateMatchingSAD(Mat &image, Mat &templateImage) {
+    int result_cols = image.cols - templateImage.cols + 1;
+    int result_rows = image.rows - templateImage.rows + 1;
+
+    Mat result(result_rows, result_cols, CV_32FC1);
+
+    // Matching dan normalisasi
+    matchTemplate(image, templateImage, result, TM_SQDIFF_NORMED);
+    normalize(result, result, 0, 1, NORM_MINMAX, -1, Mat());
+
+    // Dapatkan lokasi terbaik
+    double minVal, maxVal;
+    Point minLoc, maxLoc;
+    minMaxLoc(result, &minVal, &maxVal, &minLoc, &maxLoc, Mat());
+
+    // Gambar kotak di sekitar area pencocokan
+    rectangle(image, minLoc, Point(minLoc.x + templateImage.cols, minLoc.y + templateImage.rows), Scalar(0, 255, 0), 2);
+
+    // Tampilkan hasil
+    imshow("Result", image);
+    waitKey(0);
+}
+
+int main() {
+    // Baca citra dan template
+    Mat image = imread("image.jpg");
+    Mat templateImage = imread("template.jpg");
+
+    // Ubah citra dan template ke dalam skala keabuan
+    cvtColor(image, image, COLOR_BGR2GRAY);
+    cvtColor(templateImage, templateImage, COLOR_BGR2GRAY);
+
+    // Panggil fungsi templateMatchingSAD
+    templateMatchingSAD(image, templateImage);
+
+    return 0;
+}
+
+
+//Template Matching menggunakan SSD
+
+#include <opencv2/opencv.hpp>
+#include <iostream>
+
+using namespace cv;
+using namespace std;
+
+void templateMatchingSSD(Mat &image, Mat &templateImage) {
+    int result_cols = image.cols - templateImage.cols + 1;
+    int result_rows = image.rows - templateImage.rows + 1;
+
+    Mat result(result_rows, result_cols, CV_32FC1);
+
+    // Matching dan normalisasi
+    matchTemplate(image, templateImage, result, TM_SQDIFF);
+    normalize(result, result, 0, 1, NORM_MINMAX, -1, Mat());
+
+    // Dapatkan lokasi terbaik
+    double minVal, maxVal;
+    Point minLoc, maxLoc;
+    minMaxLoc(result, &minVal, &maxVal, &minLoc, &maxLoc, Mat());
+
+    // Gambar kotak di sekitar area pencocokan
+    rectangle(image, minLoc, Point(minLoc.x + templateImage.cols, minLoc.y + templateImage.rows), Scalar(0, 255, 0), 2);
+
+    // Tampilkan hasil
+    imshow("Result", image);
+    waitKey(0);
+}
+
+int main() {
+    // Baca citra dan template
+    Mat image = imread("image.jpg");
+    Mat templateImage = imread("template.jpg");
+
+    // Ubah citra dan template ke dalam skala keabuan
+    cvtColor(image, image, COLOR_BGR2GRAY);
+    cvtColor(templateImage, templateImage, COLOR_BGR2GRAY);
+
+    // Panggil fungsi templateMatchingSSD
+    templateMatchingSSD(image, templateImage);
+
+    return 0;
+}
+
+

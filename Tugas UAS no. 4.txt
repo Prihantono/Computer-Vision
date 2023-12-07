@@ -1,0 +1,41 @@
+//TRANSFORMASI HOUGH UNTUK MENDETEKSI LINGKARAN
+
+#include <opencv2/opencv.hpp>
+#include <iostream>
+
+using namespace cv;
+using namespace std;
+
+int main() {
+    // Baca citra
+    Mat image = imread("circle.jpg");
+
+    // Periksa apakah citra berhasil dibaca
+    if (image.empty()) {
+        cerr << "Error: Unable to read the image." << endl;
+        return -1;
+    }
+
+    // Ubah citra ke dalam skala keabuan
+    cvtColor(image, image, COLOR_BGR2GRAY);
+
+    // Lakukan operasi deteksi tepi
+    Canny(image, image, 50, 150);
+
+    // Temukan lingkaran menggunakan transformasi Hough
+    vector<Vec3f> circles;
+    HoughCircles(image, circles, HOUGH_GRADIENT, 1, image.rows / 8, 100, 30, 1, 30);
+
+    // Gambar lingkaran yang terdeteksi
+    for (size_t i = 0; i < circles.size(); ++i) {
+        Point center(cvRound(circles[i][0]), cvRound(circles[i][1]));
+        int radius = cvRound(circles[i][2]);
+        circle(image, center, radius, Scalar(0, 255, 0), 2);
+    }
+
+    // Tampilkan hasil
+    imshow("Hough Circle Detection", image);
+    waitKey(0);
+
+    return 0;
+}
